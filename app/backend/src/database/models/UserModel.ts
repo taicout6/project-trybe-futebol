@@ -2,11 +2,11 @@ import { DataTypes, Model } from 'sequelize';
 import db from '.';
 // import OtherModel from './OtherModel';
 
-class Match extends Model {
+class User extends Model {
   // public <campo>!: <tipo>;
 }
 
-Match.init({
+User.init({
   // ... Campos
 }, {
   // ... Outras configs
@@ -27,4 +27,4 @@ Match.init({
 // Example.hasMany(OtherModel, { foreignKey: 'campoC', as: 'campoEstrangeiroC' });
 // Example.hasMany(OtherModel, { foreignKey: 'campoD', as: 'campoEstrangeiroD' });
 
-export default Match;
+export default User;
