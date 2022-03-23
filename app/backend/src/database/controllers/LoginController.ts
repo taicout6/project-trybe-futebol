@@ -7,7 +7,7 @@ import UserModel from '../models/UserModel';
 
 const JWT_SECRET = fs.readFileSync('./jwt.evaluation.key', 'utf-8');
 
-const loginController = async (req: Request, res: Response) => {
+export const loginController = async (req: Request, res: Response) => {
   const { email }: ILogin = req.body;
   const user = await UserModel.findOne({ where: { email } });
   const { id, username, role } = user as IUser;
@@ -15,4 +15,12 @@ const loginController = async (req: Request, res: Response) => {
   res.status(200).json({ user: { id, username, role, email }, token });
 };
 
-export default loginController;
+export const loginAuth = async (req:Request, res: Response) => {
+  const { authorization } = req.headers;
+  if (!authorization) {
+    return res.status(404).json('Token not found');
+  }
+  const verified = jwt.verify(authorization, JWT_SECRET);
+  const { role } = verified as jwt.JwtPayload;
+  res.status(200).json(role);
+};
