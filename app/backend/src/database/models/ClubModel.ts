@@ -4,7 +4,8 @@ import Match from './MatchModel';
 
 class Club extends Model {
   public id: number;
-  public club_name: string;
+
+  public clubName: string;
 }
 
 Club.init({
@@ -14,7 +15,7 @@ Club.init({
     primaryKey: true,
     type: DataTypes.INTEGER,
   },
-  club_name: {
+  clubName: {
     allowNull: false,
     type: DataTypes.STRING,
   },
