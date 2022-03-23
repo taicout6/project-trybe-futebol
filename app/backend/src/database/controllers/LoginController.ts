@@ -11,7 +11,7 @@ const loginController = async (req: Request, res: Response) => {
   const { email }: ILogin = req.body;
   const user = await UserModel.findOne({ where: { email } });
   const { id, username, role } = user as IUser;
-  const token = jwt.sign({ username }, JWT_SECRET, { algorithm: 'HS256' });
+  const token = jwt.sign({ username, role }, JWT_SECRET, { algorithm: 'HS256' });
   res.status(200).json({ user: { id, username, role, email }, token });
 };
 
