@@ -18,7 +18,7 @@ export const loginController = async (req: Request, res: Response) => {
 export const loginAuth = async (req:Request, res: Response) => {
   const { authorization } = req.headers;
   if (!authorization) {
-    return res.status(404).json('Token not found');
+    return res.status(404).json({ message: 'Token not found' });
   }
   const verified = jwt.verify(authorization, JWT_SECRET);
   const { role } = verified as jwt.JwtPayload;
