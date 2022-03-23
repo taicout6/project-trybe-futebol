@@ -3,42 +3,72 @@ import * as chai from 'chai';
 import chaiHttp = require('chai-http');
 
 import { app } from '../app';
-import Example from '../database/models/ExampleModel';
+import UserModel from '../database/models/UserModel';
 
 import { Response } from 'superagent';
+import IUser from '../interfaces/User';
 
 chai.use(chaiHttp);
 
 const { expect } = chai;
 
-describe('Seu teste', () => {
+describe('Testando rota /login', () => {
   /**
    * Exemplo do uso de stubs com tipos
    */
 
-  // let chaiHttpResponse: Response;
+  let chaiHttpResponse: Response;
 
-  // before(async () => {
-  //   sinon
-  //     .stub(Example, "findOne")
-  //     .resolves({
-  //       ...<Seu mock>
-  //     } as Example);
-  // });
+  const userMock: any = {
+    id: 1,
+    username: 'Admin',
+    role: 'admin',
+    email: 'admin@admin.com',
+    password: '$2a$08$xi.Hxk1czAO0nZR..B393u10aED0RQ1N3PAEXQ7HxtLjKPEZBu.PW',
+  }
 
-  // after(()=>{
-  //   (Example.findOne as sinon.SinonStub).restore();
-  // })
+  describe('Testando caso de sucesso método get', () => {
+    before(async () => {
+      sinon
+        .stub(UserModel, "findOne")
+        .resolves(userMock);
+      chaiHttpResponse = await chai.request(app).get('/login');
+    });
+  
+    after(()=>{
+      (UserModel.findOne as sinon.SinonStub).restore();
+    });
+  
+    it('O endpoint get /login deve retornar o status 200', async () => {
+      expect(chaiHttpResponse).to.have.status(200);
+    });
+  
+    it('O endpoint get /login deve retornar um objeto', async () => {
+      expect(chaiHttpResponse).to.be.an('object');
+    });
+  });
 
-  // it('...', async () => {
-  //   chaiHttpResponse = await chai
-  //      .request(app)
-  //      ...
-
-  //   expect(...)
-  // });
-
-  it('Seu sub-teste', () => {
-    expect(false).to.be.eq(true);
+  describe('Testando caso de sucesso do método post', () => {
+    before(async () => {
+      sinon
+        .stub(UserModel, "findOne")
+        .resolves(userMock);
+      chaiHttpResponse = await chai.request(app).post('/login').send({
+        "email": "admin@admin.com",
+        "password": "secret_admin"
+      });
+    });
+  
+    after(()=>{
+      (UserModel.findOne as sinon.SinonStub).restore();
+    });
+  
+    it('O endpoint post /login deve retornar o status 200', async () => {
+      expect(chaiHttpResponse).to.have.status(200);
+    });
+  
+    it('O endpoint post /login deve retornar um objeto', async () => {
+      expect(chaiHttpResponse).to.be.an('object');
+    });
   });
 });
