@@ -22,7 +22,7 @@ class App {
 
     this.app.use(express.json());
     this.app.use(accessControl);
-    this.app.use(loginRoute);
+    this.app.use('/', loginRoute);
     // ...
   }
 
