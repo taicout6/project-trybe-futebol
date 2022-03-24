@@ -10,6 +10,9 @@ const JWT_SECRET = fs.readFileSync('./jwt.evaluation.key', 'utf-8');
 export const loginController = async (req: Request, res: Response) => {
   const { email }: ILogin = req.body;
   const user = await UserModel.findOne({ where: { email } });
+  if (!user) {
+    return res.status(404).json({ message: 'User not found' });
+  }
   const { id, username, role } = user as IUser;
   const token = jwt.sign({ username, role }, JWT_SECRET, { algorithm: 'HS256' });
   res.status(200).json({ user: { id, username, role, email }, token });

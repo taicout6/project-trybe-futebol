@@ -11,11 +11,11 @@ const emailSchema = joi.object({
 export const emailValidation = (req: Request, res: Response, next: NextFunction) => {
   const { email }: ILogin = req.body;
   if (!email) {
-    res.status(401).json({ message: 'All fields must be filled' });
+    return res.status(401).json({ message: 'All fields must be filled' });
   }
   const { error } = emailSchema.validate({ email });
   if (error) {
-    res.status(401).json({ message: 'Incorrect email or password' });
+    return res.status(401).json({ message: 'Incorrect email or password' });
   }
   next();
 };
@@ -27,11 +27,11 @@ const passwordSchema = joi.object({
 export const passwordValidation = (req: Request, res: Response, next: NextFunction) => {
   const { password }: ILogin = req.body;
   if (!password) {
-    res.status(401).json({ message: 'All fields must be filled' });
+    return res.status(401).json({ message: 'All fields must be filled' });
   }
   const { error } = passwordSchema.validate({ password });
   if (error) {
-    res.status(401).json({ message: 'Incorrect email or password' });
+    return res.status(401).json({ message: 'Incorrect email or password' });
   }
   next();
 };
