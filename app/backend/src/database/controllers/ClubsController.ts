@@ -8,6 +8,6 @@ export const getAllClubs = async (_req: Request, res: Response) => {
 
 export const getClubById = async (req: Request, res: Response) => {
   const { id } = req.params;
-  console.log('Not implemented');
-  res.status(200).json(id);
+  const club = await ClubModel.findByPk(id);
+  res.status(200).json(club);
 };
