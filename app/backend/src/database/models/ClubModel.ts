@@ -27,12 +27,12 @@ Club.init({
 });
 
 Match.belongsTo(Club, {
-  foreignKey: 'home_team',
+  foreignKey: 'homeTeam',
   as: 'homeClub',
 });
 
 Match.belongsTo(Club, {
-  foreignKey: 'away_team',
+  foreignKey: 'awayTeam',
   as: 'awayClub',
 });
 
