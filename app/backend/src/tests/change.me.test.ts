@@ -322,7 +322,7 @@ describe('Testando rota  /matchs', () => {
     });
   
     after(()=>{
-      (ClubModel.findAll as sinon.SinonStub).restore();
+      (MatchModel.findAll as sinon.SinonStub).restore();
     });
 
     it('O endpoint get /matchs deve retornar o status 200', async () => {
