@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import Club from '../models/ClubModel';
 import MatchModel from '../models/MatchModel';
 
-const getAllMatchs = async (_req: Request, res: Response) => {
+export const getAllMatchs = async (_req: Request, res: Response) => {
   const matchs = await MatchModel.findAll({
     include: [
       { model: Club, as: 'homeClub', attributes: { exclude: ['id'] } },
@@ -34,4 +34,13 @@ export const finishMatch = async (req:Request, res: Response) => {
   res.status(200).json({ message: 'Finish Match' });
 };
 
-export default getAllMatchs;
+export const updateMatch = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { homeTeamGoals, awayTeamGoals } = req.body;
+  const matchExist = await MatchModel.findByPk(id);
+  if (!matchExist) {
+    return res.status(404).json({ message: 'Match not found' });
+  }
+  await MatchModel.update({ homeTeamGoals, awayTeamGoals }, { where: { id } });
+  res.status(200).json({ message: 'Match updated' });
+};
