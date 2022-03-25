@@ -5,6 +5,7 @@ import chaiHttp = require('chai-http');
 import { app } from '../app';
 import UserModel from '../database/models/UserModel';
 import ClubModel from '../database/models/ClubModel';
+import MatchModel from '../database/models/MatchModel';
 
 import { Response } from 'superagent';
 import IUser from '../interfaces/User';
@@ -23,6 +24,32 @@ describe('Testando rota /login', () => {
     email: 'admin@admin.com',
     password: '$2a$08$xi.Hxk1czAO0nZR..B393u10aED0RQ1N3PAEXQ7HxtLjKPEZBu.PW',
   }
+
+  const notUserMock = undefined;
+
+  describe('Testando quando não há usuario cadastrado', () => {
+    before(async () => {
+      sinon
+        .stub(UserModel, "findOne")
+        .resolves(notUserMock);
+      chaiHttpResponse = await chai.request(app).post('/login').send({
+        "email": "admin@admin.com.br",
+        "password": "secret_admin2"
+      });
+    });
+  
+    after(()=>{
+      (UserModel.findOne as sinon.SinonStub).restore();
+    });
+  
+    it('O endpoint post /login deve retornar o status 404', async () => {
+      expect(chaiHttpResponse).to.have.status(404);
+    });
+  
+    it('O endpoint post /login deve retornar um objeto', async () => {
+      expect(chaiHttpResponse).to.be.an('object');
+    });
+  });
 
   describe('Testando quando o campo de email está vazio no método post', () => {
     before(async () => {
@@ -45,6 +72,30 @@ describe('Testando rota /login', () => {
     });
   });
 
+  describe('Testando quando o campo de email invalido', () => {
+    before(async () => {
+      sinon
+        .stub(UserModel, "findOne")
+        .resolves(userMock);
+      chaiHttpResponse = await chai.request(app).post('/login').send({
+        "email": "admin@admin",
+        "password": "secret_admin"
+      });
+    });
+  
+    after(()=>{
+      (UserModel.findOne as sinon.SinonStub).restore();
+    });
+  
+    it('O endpoint post /login deve retornar o status 401', async () => {
+      expect(chaiHttpResponse).to.have.status(401);
+    });
+  
+    it('O endpoint post /login deve retornar um objeto', async () => {
+      expect(chaiHttpResponse).to.be.an('object');
+    });
+  });
+
   describe('Testando quando o campo de password está vazio no método post', () => {
     before(async () => {
       sinon
@@ -52,6 +103,30 @@ describe('Testando rota /login', () => {
         .resolves(userMock);
       chaiHttpResponse = await chai.request(app).post('/login').send({
         "email": "admin@admin.com"
+      });
+    });
+  
+    after(()=>{
+      (UserModel.findOne as sinon.SinonStub).restore();
+    });
+  
+    it('O endpoint post /login deve retornar o status 401', async () => {
+      expect(chaiHttpResponse).to.have.status(401);
+    });
+  
+    it('O endpoint post /login deve retornar um objeto', async () => {
+      expect(chaiHttpResponse).to.be.an('object');
+    });
+  });
+
+  describe('Testando quando o campo de password invalido', () => {
+    before(async () => {
+      sinon
+        .stub(UserModel, "findOne")
+        .resolves(userMock);
+      chaiHttpResponse = await chai.request(app).post('/login').send({
+        "email": "admin@admin.com",
+        "password": "adm"
       });
     });
   
@@ -177,8 +252,85 @@ describe('Testando rota  /clubs', () => {
     it('O endpoint get /clubs deve retornar o status 200', async () => {
       expect(chaiHttpResponse).to.have.status(200);
     });
+
   
     it('O endpoint get /clubs deve retornar um objeto', async () => {
+      expect(chaiHttpResponse).to.be.an('object');
+    });
+  });
+});
+
+describe('Testando rota  /clubs/:id', () => {
+  let chaiHttpResponse: Response;
+
+  const clubMock: any = [
+    {
+      "id": 1,
+      "clubName": "Avaí/Kindermann"
+    },
+  ];
+
+  describe('Testando caso de sucesso do método get', () => {
+    before(async () => {
+      sinon
+        .stub(ClubModel, "findByPk")
+        .resolves(clubMock.id);
+      chaiHttpResponse = await chai.request(app).get('/clubs/:id');
+    });
+  
+    after(()=>{
+      (ClubModel.findByPk as sinon.SinonStub).restore();
+    });
+
+    it('O endpoint get /clubs/:id deve retornar o status 200', async () => {
+      expect(chaiHttpResponse).to.have.status(200);
+    });
+    
+  
+    it('O endpoint get /clubs/:id deve retornar um objeto', async () => {
+      expect(chaiHttpResponse).to.be.an('object');
+    });
+  });
+});
+
+describe('Testando rota  /matchs', () => {
+  let chaiHttpResponse: Response;
+
+  const matchsMock: any = [
+    {
+      "id": 1,
+      "homeTeam": 16,
+      "homeTeamGoals": 1,
+      "awayTeam": 8,
+      "awayTeamGoals": 1,
+      "inProgress": false,
+      "homeClub": {
+        "clubName": "São Paulo"
+      },
+      "awayClub": {
+        "clubName": "Grêmio"
+      }
+    },
+  ];
+
+  describe('Testando caso de sucesso do método get', () => {
+    before(async () => {
+      sinon
+        .stub(MatchModel, "findAll")
+        .resolves(matchsMock);
+      chaiHttpResponse = await chai.request(app).get('/matchs');
+    });
+  
+    after(()=>{
+      (ClubModel.findAll as sinon.SinonStub).restore();
+    });
+
+    it('O endpoint get /matchs deve retornar o status 200', async () => {
+      expect(chaiHttpResponse).to.have.status(200);
+    });
+
+  
+    it('O endpoint get /matchs deve retornar um objeto', async () => {
       expect(chaiHttpResponse).to.be.an('object');
     });
   });
