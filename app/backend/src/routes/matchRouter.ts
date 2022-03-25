@@ -1,5 +1,5 @@
 import * as express from 'express';
-import getAllMatchs from '../database/controllers/matchsController';
+import getAllMatchs, { createMatch } from '../database/controllers/matchsController';
 
 const matchsRoute = express.Router();
 
@@ -9,6 +9,7 @@ const matchsRoute = express.Router();
 
 matchsRoute
   .route('/matchs')
-  .get(getAllMatchs);
+  .get(getAllMatchs)
+  .post(createMatch);
 
 export default matchsRoute;

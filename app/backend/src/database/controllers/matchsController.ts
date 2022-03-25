@@ -12,4 +12,18 @@ const getAllMatchs = async (_req: Request, res: Response) => {
   res.status(200).json(matchs);
 };
 
+export const createMatch = async (req: Request, res: Response) => {
+  const { homeTeam, awayTeam, homeTeamGoals, awayTeamGoals, inProgress } = req.body;
+
+  const match = await MatchModel.create({
+    homeTeam,
+    awayTeam,
+    homeTeamGoals,
+    awayTeamGoals,
+    inProgress,
+  });
+
+  res.status(201).json(match);
+};
+
 export default getAllMatchs;
