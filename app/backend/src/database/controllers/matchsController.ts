@@ -14,7 +14,6 @@ const getAllMatchs = async (_req: Request, res: Response) => {
 
 export const createMatch = async (req: Request, res: Response) => {
   const { homeTeam, awayTeam, homeTeamGoals, awayTeamGoals, inProgress } = req.body;
-
   const match = await MatchModel.create({
     homeTeam,
     awayTeam,
@@ -22,8 +21,17 @@ export const createMatch = async (req: Request, res: Response) => {
     awayTeamGoals,
     inProgress,
   });
-
   res.status(201).json(match);
+};
+
+export const finishMatch = async (req:Request, res: Response) => {
+  const { id } = req.params;
+  const matchExist = await MatchModel.findByPk(id);
+  if (!matchExist) {
+    return res.status(404).json({ message: 'Match not found' });
+  }
+  await MatchModel.update({ inProgress: false }, { where: { id } });
+  res.status(201).json({ message: 'Finish Match' });
 };
 
 export default getAllMatchs;

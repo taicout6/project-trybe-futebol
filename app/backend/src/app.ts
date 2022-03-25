@@ -1,4 +1,5 @@
 import * as express from 'express';
+import * as cors from 'cors';
 import clubsRoute from './routes/clubsRouter';
 import loginRoute from './routes/loginRouter';
 import matchsRoute from './routes/matchRouter';
@@ -23,6 +24,7 @@ class App {
     };
 
     this.app.use(express.json());
+    this.app.use(cors);
     this.app.use(accessControl);
     this.app.use('/', loginRoute, clubsRoute, matchsRoute);
     // ...
