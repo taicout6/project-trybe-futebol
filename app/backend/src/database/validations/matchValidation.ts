@@ -11,7 +11,7 @@ const matchValidate = async (req: Request, res: Response, next: NextFunction) =>
   const homeClubExist = await ClubModel.findByPk(homeTeam);
   const awayClubExist = await ClubModel.findByPk(awayTeam);
   if (!homeClubExist || !awayClubExist) {
-    return res.status(404).json({ message: 'There is no team with such id!' });
+    return res.status(401).json({ message: 'There is no team with such id!' });
   }
   next();
 };
