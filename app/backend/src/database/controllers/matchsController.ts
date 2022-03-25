@@ -31,7 +31,7 @@ export const finishMatch = async (req:Request, res: Response) => {
     return res.status(404).json({ message: 'Match not found' });
   }
   await MatchModel.update({ inProgress: false }, { where: { id } });
-  res.status(201).json({ message: 'Finish Match' });
+  res.status(200).json({ message: 'Finish Match' });
 };
 
 export default getAllMatchs;
