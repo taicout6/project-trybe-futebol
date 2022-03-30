@@ -3,6 +3,7 @@ import * as cors from 'cors';
 import clubsRoute from './routes/clubsRouter';
 import loginRoute from './routes/loginRouter';
 import matchsRoute from './routes/matchRouter';
+import leaderBordRoute from './routes/leaderBoardHome';
 
 class App {
   public app: express.Express;
@@ -26,7 +27,7 @@ class App {
     this.app.use(express.json());
     this.app.use(cors());
     this.app.use(accessControl);
-    this.app.use('/', loginRoute, clubsRoute, matchsRoute);
+    this.app.use('/', loginRoute, clubsRoute, matchsRoute, leaderBordRoute);
     // ...
   }
 
