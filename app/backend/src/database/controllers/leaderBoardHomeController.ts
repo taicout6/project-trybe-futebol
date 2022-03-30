@@ -1,16 +1,18 @@
 import { Request, Response } from 'express';
-// import ClubModel from '../models/ClubModel';
-// import MatchModel from '../models/MatchModel';
+import ILeaderBoard from '../../interfaces/LeaderBoard';
+import IMatch from '../../interfaces/Match';
+import ClubModel from '../models/ClubModel';
+import MatchModel from '../models/MatchModel';
 
-// const returnMatchs = async () => {
-//   const result = await MatchModel.findAll({
-//     where: { inProgress: false },
-//     include: [
-//       { model: ClubModel, as: 'homeClub', attributes: { exclude: ['id'] } },
-//     ],
-//   });
-//   return result;
-// };
+const returnAllMatchs = async () => {
+  const result = await MatchModel.findAll({
+    where: { inProgress: false },
+    include: [
+      { model: ClubModel, as: 'homeClub', attributes: { exclude: ['id'] } },
+    ],
+  });
+  return result;
+};
 
 const leaderBoardStructure = (name: string | undefined) => {
   const result = {
@@ -28,8 +30,22 @@ const leaderBoardStructure = (name: string | undefined) => {
   return result;
 };
 
+const leaderBoardHomeData = async () => {
+  const allMatchs = await returnAllMatchs();
+  const clubData: ILeaderBoard[] = [];
+  allMatchs.forEach((match) => {
+    const { homeClub }: IMatch = match;
+    const club = leaderBoardStructure(homeClub?.clubName);
+    const filterClubs = clubData.findIndex((index) => index.name === homeClub?.clubName);
+    if (filterClubs < 0) {
+      clubData.push(club);
+    }
+  });
+  return clubData;
+};
+
 const leaderBoardHome = async (_req: Request, res: Response) => {
-  const result = leaderBoardStructure('Palmeiras');
+  const result = await leaderBoardHomeData();
   res.status(200).json(result);
 };
 
