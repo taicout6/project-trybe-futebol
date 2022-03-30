@@ -1,4 +1,4 @@
-export default interface ILeaderBoard {
+export default interface IClubStatistics {
   name: string | undefined,
   totalPoints: number,
   totalGames: number,

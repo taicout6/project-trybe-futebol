@@ -3,7 +3,7 @@ import * as cors from 'cors';
 import clubsRoute from './routes/clubsRouter';
 import loginRoute from './routes/loginRouter';
 import matchsRoute from './routes/matchRouter';
-import leaderBordRoute from './routes/leaderBoardHome';
+import leaderBordRoute from './routes/leaderBoard';
 
 class App {
   public app: express.Express;
