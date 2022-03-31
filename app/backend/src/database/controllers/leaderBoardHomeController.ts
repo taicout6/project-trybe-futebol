@@ -1,3 +1,4 @@
+/* eslint-disable max-lines-per-function */
 import { Request, Response } from 'express';
 import IClubStatistics from '../../interfaces/ClubStatistics';
 import IMatch from '../../interfaces/Match';
@@ -71,46 +72,47 @@ const setLeaderBoardHomeData = (clubMatch: IMatch, clubObj: IClubStatistics) => 
   return objVal;
 };
 
+const sortLeaderBoardHome = (clubsStatisticsData: IClubStatistics[]) => {
+  clubsStatisticsData.sort((a, b) => {
+    if (a.totalPoints > b.totalPoints) return -1;
+    if (b.totalPoints > a.totalPoints) return 1;
+    if (a.totalVictories > b.totalVictories) return -1;
+    if (b.totalVictories > a.totalVictories) return 1;
+    if (a.goalsBalance > b.goalsBalance) return -1;
+    if (b.goalsBalance > a.goalsBalance) return 1;
+    if (a.goalsFavor > b.goalsFavor) return -1;
+    if (b.goalsFavor > a.goalsFavor) return 1;
+    if (a.goalsOwn > b.goalsOwn) return 1;
+    if (b.goalsOwn > a.goalsOwn) return -1;
+    return 0;
+  });
+  return clubsStatisticsData;
+};
+
 // Função que vai atualizar os dados do leaderBoardHome
 const leaderBoardHomeData = async () => {
-  // Função que retorna todas as partidas com foco no time da casa
-  const allMatchs = await returnAllMatchs();
-
-  // Array que vai armazenar as estatísticas de cada clube
   const clubsStatisticsData: IClubStatistics[] = [];
 
-  allMatchs.forEach((match) => {
-    // partida individual
-    const clubMatch: IMatch = match;
+  const allClubs = await ClubModel.findAll();
+  const allMatchs = await returnAllMatchs();
 
-    // Pega o nome do clube da casa de cada partida individual
-    const clubName = clubMatch.homeClub?.clubName;
-
-    // Objeto contendo as estatísticas zeradas de cada clube
-    const clubObj = clubStructure(clubName);
-
-    // Chamando função que atualiza as estatísticas de cada clube
-    setLeaderBoardHomeData(clubMatch, clubObj);
-
-    // Evita que os clubes se repitam
-    const filterClubsIndex = clubsStatisticsData.findIndex((index) => index.name === clubName);
-
-    // Caso não exista um clube no array, ele é adicionado
-    // (index negativo indica que não existe no array)
-    if (filterClubsIndex < 0) {
-      clubsStatisticsData.push(clubObj);
-    }
-
-    // setLeaderBoardHomeData(clubMatch, clubsStatisticsData[filterClubsIndex]);
+  allClubs.forEach((club) => {
+    const clubObj = clubStructure(club.clubName);
+    allMatchs.forEach((match: IMatch) => {
+      if (clubObj.name === match.homeClub?.clubName) {
+        setLeaderBoardHomeData(match, clubObj);
+      }
+    });
+    clubsStatisticsData.push(clubObj);
   });
 
-  // Retorno do array com dados atualizados
   return clubsStatisticsData;
 };
 
 const leaderBoardHome = async (_req: Request, res: Response) => {
   const result = await leaderBoardHomeData();
-  res.status(200).json(result);
+  const resultSorted = sortLeaderBoardHome(result);
+  res.status(200).json(resultSorted);
 };
 
 export default leaderBoardHome;
