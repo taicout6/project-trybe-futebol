@@ -37,36 +37,24 @@ const clubStructure = (name: string | undefined) => {
 const setLeaderBoardHomeData = (clubMatch: IMatch, clubObj: IClubStatistics) => {
   const objVal = clubObj;
 
-  // Atualiza as vitórias e total de pontos
   if (clubMatch.homeTeamGoals > clubMatch.awayTeamGoals) {
     objVal.totalVictories += 1;
     objVal.totalPoints += 3;
   }
 
-  // Atualiza os empates e total de pontos
   if (clubMatch.homeTeamGoals === clubMatch.awayTeamGoals) {
     objVal.totalDraws += 1;
     objVal.totalPoints += 1;
   }
 
-  // Atualiza as derrotas
   if (clubMatch.homeTeamGoals < clubMatch.awayTeamGoals) {
     objVal.totalLosses += 1;
   }
 
-  // Atualiza o total de jogos
   objVal.totalGames += 1;
-
-  // Atualiza os gols a favor
   objVal.goalsFavor += clubMatch.homeTeamGoals;
-
-  // Atualiza os gols sofridos
   objVal.goalsOwn += clubMatch.awayTeamGoals;
-
-  // Atualiza o saldo de gols
   objVal.goalsBalance = objVal.goalsFavor - objVal.goalsOwn;
-
-  // Atualiza o aproveitamento
   objVal.efficiency = parseFloat(((objVal.totalPoints / (objVal.totalGames * 3)) * 100).toFixed(2));
 
   return objVal;
